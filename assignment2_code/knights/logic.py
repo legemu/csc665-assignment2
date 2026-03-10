@@ -221,6 +221,42 @@ class Biconditional(Sentence):
     def symbols(self):
         return set.union(self.left.symbols(), self.right.symbols())
 
+'''
+Part 1(b): XOR connective class
+'''
+class Xor(Sentence):
+    def __init__(self, left, right):
+        # validate and store operands
+        Sentence.validate(left)
+        Sentence.validate(right)
+        self.left = left
+        self.right = right
+
+    def __eq__(self, other):
+        return (isinstance(other, Xor)
+                and self.left == other.left
+                and self.right == other.right)
+    
+    def __hash__(self):
+        return hash(("xor", hash(self.left), hash(self.right)))
+    
+    def __repr__(self):
+        return f"Xor({self.left}, {self.right})"
+    
+    def evaluate(self, model):
+        # return (left or right) and not (left and right)
+        left_val = self.left.evaluate(model)
+        right_val = self.right.evaluate(model)
+        return (left_val or right_val) and not (left_val and right_val)
+    
+    def formula(self):
+        # return "P ⊕ Q"
+        left = Sentence.parenthesize(str(self.left))
+        right = Sentence.parenthesize(str(self.right))
+        return f"{left} ⊕ {right}"
+    
+    def symbols(self):
+        return set.union(self.left.symbols(), self.right.symbols())
 
 def model_check(knowledge, query):
     """Checks if knowledge base entails query."""
