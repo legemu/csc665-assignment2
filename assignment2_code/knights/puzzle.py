@@ -17,10 +17,13 @@ CKnave = Symbol("C is a Knave")
 # A says "I am both a knight and a knave."
 # ----------------------------------------
 ##   write the statement(s) in PL 
-stat = None
+stat = And(AKnight, AKnave)
+
 ##   Fill in the knowledge base
 knowledge1 = And(
-    # TODO
+    Xor(AKnight, AKnave),
+    Implication(AKnight, stat),
+    Implication(AKnave, Not(stat))
 )
 # ----------------------------------------
 
@@ -29,10 +32,28 @@ knowledge1 = And(
 # B says "We are of different kinds."
 # ----------------------------------------
 ##   write the statement(s) in PL 
-stat = None
+A_stat = Or(
+    And(AKnight, BKnight),
+    And(AKnave, BKnave)
+    )
+B_stat = Or(
+    And(AKnight, BKnave),
+    And(AKnave, BKnight)
+    )
+
 ##   Fill in the knowledge base
 knowledge2 = And(
-    # TODO
+    # world rules
+    Xor(AKnight, AKnave),
+    Xor(BKnight, BKnave),
+
+    # A's truth rules
+    Implication(AKnight, A_stat),
+    Implication(AKnave, Not(A_stat)),
+
+    # B's truth rules
+    Implication(BKnight, B_stat),
+    Implication(BKnave, Not(B_stat))
 )
 # ----------------------------------------
 
@@ -43,10 +64,45 @@ knowledge2 = And(
 # C says "A is a knight."
 # ----------------------------------------
 ##   write the statement(s) in PL 
-stat = None
+
+# A's possible statements
+A_possible_knight = Symbol("A_possible_knight")
+A_possible_knave = Symbol("A_possible_knave")
+
+# The truth values of A's possible statements
+A_knight_claim = AKnight
+A_knave_claim = AKnave
+
+B_stat1 = A_possible_knave
+B_stat2 = CKnave
+
+C_stat = AKnight
+
 ##   Fill in the knowledge base
 knowledge3 = And(
-    # TODO
+    # world rules
+    Xor(AKnight, AKnave),
+    Xor(BKnight, BKnave),
+    Xor(CKnight, CKnave),
+
+    # A said exactly one of these two statements
+    Xor(A_possible_knight, A_possible_knave),
+
+    # A's truth rules
+    Implication(AKnight, Implication(A_possible_knight, A_knight_claim)),
+    Implication(AKnight, Implication(A_possible_knave, A_knave_claim)),
+    Implication(AKnave, Implication(A_possible_knight, Not(A_knight_claim))),
+    Implication(AKnave, Implication(A_possible_knave, Not(A_knave_claim))),
+
+    # B's truth rules
+    Implication(BKnight, B_stat1),
+    Implication(BKnight, B_stat2),
+    Implication(BKnave, Not(B_stat1)),
+    Implication(BKnave, Not(B_stat2)),
+
+    # C's truth rules
+    Implication(CKnight, C_stat),
+    Implication(CKnave, Not(C_stat))
 )
 # ----------------------------------------
 
