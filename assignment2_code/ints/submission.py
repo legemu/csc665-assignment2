@@ -32,7 +32,73 @@ def ints() -> Tuple[List[Formula], Formula]:
     # predicate is used to assert that two objects are the same.
     formulas = []
     # BEGIN_YOUR_CODE (our solution is 16 lines of code, but don't worry if you deviate from this)
-    # TODO
+    law0 = Forall('$x', Exists('$y',
+                               And(
+                                   Successor('$x', '$y'),
+                                   And(
+                                       Not(Equals('$x', '$y')),
+                                       Forall('$z',
+                                              Implies(
+                                                  Successor('$x', '$z'),
+                                                  Equals('$z', '$y')
+                                                  )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+    
+    law1 = Forall('$x',
+                  And(
+                      Or(Odd('$x'), Even('$x')),
+                      Not(And(Odd('$x'), Even('$x')))
+                      )
+                    )
+    
+    law2 = Forall('$x', Forall('$y',
+                               Implies(
+                                   And(
+                                       Successor('$x', '$y'),
+                                       Even('$x')
+                                    ),
+                                   Odd('$y')
+                                   )
+                                )
+                            )
+    
+    law3 = Forall('$x', Forall('$y',
+                               Implies(
+                                   And(
+                                       Successor('$x', '$y'),
+                                       Odd('$x')
+                                    ),
+                                   Even('$y')
+                                   )
+                                )
+                            )
+    
+    law4 = Forall('$x', Forall('$y',
+                               Implies(
+                                   Successor('$x', '$y'),
+                                   Larger('$y', '$x')
+                                )
+                            )
+                        )
+    
+    law5 = Forall('$x',
+                  Forall('$y',
+                         Forall('$z', Implies(
+                             And(
+                                 Larger('$x', '$y'),
+                                 Larger('$y', '$z')
+                             ),
+                             Larger('$x', '$z')
+                             )
+                        )
+                    )
+                )
+    
+    formulas = [law0, law1, law2, law3, law4, law5]
     # END_YOUR_CODE
     query = Forall('$x', Exists('$y', And(Even('$y'), Larger('$y', '$x'))))
     return formulas, query
