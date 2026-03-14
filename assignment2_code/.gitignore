@@ -1,0 +1,5 @@
+# Mac stuff
+__MACOSX/
+.DS_Store
+**/.DS_Store
+**/._*

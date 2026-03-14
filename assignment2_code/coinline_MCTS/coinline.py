@@ -19,7 +19,6 @@ from typing import Dict, Optional, Tuple, List
 
 Action = Tuple[str, int]  # ('L' or 'R', 1 or 2)
 
-
 class State:
     def __init__(self, coins, pScore: int = 0, aiScore: int = 0, turn: str = "player"):
         self.coins = coins
@@ -240,7 +239,6 @@ def backpropagate(node, reward):
     while current is not None:
         current.N += 1
         current.W += reward
-        reward   = -reward         
         current  = current.parent
 
 
@@ -257,33 +255,35 @@ def best_action(root):
 
     return best_action
 
-
+ 
 def mcts(state, budget=2000, reward_mode="winloss", c=math.sqrt(2)):
     """
     Run MCTS for 'budget' iterations and return a legal action for the current player.
-
+ 
     - Uses selection / expansion / rollout / backpropagation
     - reward is computed at terminal states via terminal_reward(...)
-
+ 
     Returns: an action in actions(state), or None if state is terminal.
     """
     if terminal(state):
         return None
-
+ 
     root_player = player(state)
     root = MCTSNode(state)
-
+ 
     for _ in range(budget):
         node = root
+ 
         while not terminal(node.state) and not node.untried_actions:
             node = select_child_uct(node, c)
-
+ 
         if not terminal(node.state) and node.untried_actions:
             node = expand(node)
-
+ 
         terminal_state = rollout(node.state)
-
+ 
         reward = terminal_reward(terminal_state, root_player, reward_mode)
         backpropagate(node, reward)
-
+ 
     return best_action(root)
+ 
